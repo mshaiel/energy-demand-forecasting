@@ -1,0 +1,52 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest & testing caches
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Streamlit secrets & local state
+.streamlit/secrets.toml
+
+# Operating System & Editor Metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data Handling: Ignore raw data, large dumps, and archives
+data/raw/*
+!data/raw/.gitkeep
+*.csv.gz
+*.parquet
+*.zip
+*.tar.gz
+
+# Bridge Delivery Contract: Only track the 4 official bridge files
+data/bridge/*
+!data/bridge/.gitkeep
+!data/bridge/forecast_results.csv
+!data/bridge/metrics_summary.json
+!data/bridge/feature_importance.json
+!data/bridge/fold_metadata.json
+
+# Ignore temporary scratch/unzipped outputs
+data/bridge/colab output/
+scratch/

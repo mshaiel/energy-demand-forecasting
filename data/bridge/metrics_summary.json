@@ -1,0 +1,82 @@
+{
+  "chronos_primary_24h": {
+    "mae": 2037.17,
+    "rmse": 3351.51,
+    "mape": 5.24,
+    "pinball_q10": 783.24,
+    "pinball_q90": 403.72,
+    "winkler_80": 11869.57,
+    "coverage_80": 0.7667,
+    "n_samples": 120
+  },
+  "chronos_extended_168h": {
+    "mae": 4662.75,
+    "rmse": 6026.37,
+    "mape": 12.97,
+    "pinball_q10": 1840.06,
+    "pinball_q90": 1159.59,
+    "winkler_80": 29996.48,
+    "coverage_80": 0.4452,
+    "n_samples": 840
+  },
+  "xgboost_primary_24h": {
+    "mae": 2076.8,
+    "rmse": 2658.19,
+    "mape": 5.42,
+    "pinball_q10": 531.39,
+    "pinball_q90": 392.43,
+    "winkler_80": 9238.24,
+    "coverage_80": 0.8583,
+    "n_samples": 120
+  },
+  "xgboost_extended_168h": {
+    "mae": 2661.03,
+    "rmse": 3461.3,
+    "mape": 7.14,
+    "pinball_q10": 634.17,
+    "pinball_q90": 603.52,
+    "winkler_80": 12376.85,
+    "coverage_80": 0.7262,
+    "n_samples": 840
+  },
+  "lstm_primary_24h": {
+    "mae": 1939.03,
+    "rmse": 2954.08,
+    "mape": 4.95,
+    "pinball_q10": 695.38,
+    "pinball_q90": 395.29,
+    "winkler_80": 10906.75,
+    "coverage_80": 0.875,
+    "n_samples": 120
+  },
+  "lstm_extended_168h": {
+    "mae": 3639.38,
+    "rmse": 4665.52,
+    "mape": 10.05,
+    "pinball_q10": 1200.44,
+    "pinball_q90": 777.34,
+    "winkler_80": 19777.83,
+    "coverage_80": 0.5286,
+    "n_samples": 840
+  },
+  "sarimax_primary_24h": {
+    "mae": 5120.57,
+    "rmse": 5505.66,
+    "mape": 13.71,
+    "pinball_q10": 849.51,
+    "pinball_q90": 1585.6,
+    "winkler_80": 24351.03,
+    "coverage_80": 0.225,
+    "n_samples": 120.0
+  },
+  "sarimax_extended_168h": {
+    "mae": 5538.19,
+    "rmse": 6881.15,
+    "mape": 14.88,
+    "pinball_q10": 1204.01,
+    "pinball_q90": 1884.11,
+    "winkler_80": 30881.26,
+    "coverage_80": 0.4357,
+    "n_samples": 840.0
+  }
+}

@@ -1,0 +1,17 @@
+dataset:
+  name: "PJME_hourly.csv"
+  target_column: "PJME_MW"
+  timestamp_column: "Datetime"
+  freq: "h"
+
+backtest:
+  n_folds: 5
+  horizons:
+    primary: 24
+    extended: 168
+  min_train_years: 2
+  gap_hours: 0
+
+evaluation:
+  quantiles: [0.1, 0.5, 0.9]
+  confidence_interval: 0.80
