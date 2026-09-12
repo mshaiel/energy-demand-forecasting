@@ -4,16 +4,16 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.x-EB8921?style=for-the-badge)](https://xgboost.ai/)
 [![Chronos](https://img.shields.io/badge/Chronos--T5-Amazon_Science-FF9900?style=for-the-badge&logo=amazon&logoColor=white)](https://github.com/amazon-science/chronos-forecasting)
-[![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Live_Dashboard-Streamlit_Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://energy-grid-intelligence.streamlit.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-> **A benchmark across four generations of time-series architectures** (Classical Statistical $\rightarrow$ Tree Ensemble $\rightarrow$ Deep Recurrent $\rightarrow$ Pretrained Foundation Model) on the **PJM Interconnection (Eastern US Grid)** with rolling-origin expanding window backtesting, calibrated quantile outputs ($q_{10}, q_{50}, q_{90}$), and proper scoring rules.
+> **An empirical benchmark across four generations of time-series architecture** (Classical Statistical $\rightarrow$ Tree Ensemble $\rightarrow$ Deep Recurrent $\rightarrow$ Pretrained Foundation Model) on the **PJM Interconnection (Eastern US Grid)** with rolling-origin expanding window backtesting, calibrated quantile envelopes ($q_{10}, q_{50}, q_{90}$), and an interactive grid dispatch stress-test simulator.
 
 ---
 
-## 🌐 Live Interactive Dashboard & Links
+## 🌐 Live Application & Resources
 
-* **🚀 Live SCADA Dashboard**: `https://energy-grid-intelligence.streamlit.app/` 
+* **🚀 Live Interactive SCADA Console**: **[energy-grid-intelligence.streamlit.app](https://energy-grid-intelligence.streamlit.app/)**
 * **⚡ Master Colab Training Pipeline**: [`notebooks/master_training_pipeline.ipynb`](notebooks/master_training_pipeline.ipynb)
 * **📊 Dataset Provenance**: [PJM Hourly Energy Consumption (Kaggle / Rob Mulla)](https://www.kaggle.com/datasets/robikscube/hourly-energy-consumption) — 140,256 continuous hourly observations (2002–2018).
 
@@ -73,11 +73,12 @@ flowchart TD
         F --> G[data/bridge/*.csv, *.json]
         G --> H[Fast Ingestion & Cache\n< 50ms Boot]
         H --> I1[Page 1: Benchmark Leaderboard]
-        H --> I2[Page 2: 24h Forecast Explorer]
-        H --> I3[Page 3: 168h Trajectory & Decomposition]
-        H --> I4[Page 4: Backtesting & Calibration]
-        H --> I5[Page 5: SHAP Feature Intelligence]
-        H --> I6[Page 6: Methodology & Equations]
+        H --> I2[Page 2: Live Dispatch Simulator]
+        H --> I3[Page 3: 24h Forecast Explorer]
+        H --> I4[Page 4: 168h Extended Horizon]
+        H --> I5[Page 5: Backtesting Protocol]
+        H --> I6[Page 6: SHAP Feature Intelligence]
+        H --> I7[Page 7: Mathematical Methodology]
     end
 ```
 
@@ -114,11 +115,11 @@ Clone the repository and launch the dashboard locally without needing any API ke
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/<your-username>/energy-demand-forecasting.git
+git clone https://github.com/mshaiel/energy-demand-forecasting.git
 cd energy-demand-forecasting
 
 # 2. Install lightweight requirements
-pip install -r requirements_local.txt
+pip install -r requirements.txt
 
 # 3. Launch Streamlit SCADA Dashboard
 streamlit run dashboard/app.py
@@ -133,30 +134,6 @@ pytest -v
 
 ---
 
-## ☁️ How to Deploy to Streamlit Community Cloud (Free Public URL)
-
-Deploy this interactive dashboard to a free public link in 3 minutes:
-
-1. **Push your code to GitHub**:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit: Energy Demand Forecasting portfolio"
-   git branch -M main
-   git remote add origin https://github.com/<your-username>/energy-demand-forecasting.git
-   git push -u origin main
-   ```
-2. **Go to [share.streamlit.io](https://share.streamlit.io/)** and log in with GitHub.
-3. Click **New app**.
-4. Configure the 3 fields:
-   * **Repository**: `<your-username>/energy-demand-forecasting`
-   * **Branch**: `main`
-   * **Main file path**: `dashboard/app.py`
-5. Click **Deploy!**
-6. Within 60 seconds, your app will be live at `https://<your-app-name>.streamlit.app`! Copy that link into your resume, LinkedIn, and the top of this README.
-
----
-
 ## 📂 Repository File Hierarchy
 
 ```
@@ -164,21 +141,23 @@ energy-demand-forecasting/
 ├── README.md                          ← Project showcase & benchmark presentation
 ├── LICENSE                            ← MIT Open Source License
 ├── .gitignore                         ← Excludes raw datasets & virtualenvs
-├── requirements_local.txt             ← Lightweight dashboard & test dependencies
+├── requirements.txt                   ← Streamlit Cloud dependencies
+├── requirements_local.txt             ← Lightweight local dependencies
 ├── requirements_colab.txt             ← Full GPU dependencies for Colab training
 │
 ├── dashboard/
 │   ├── app.py                         ← Streamlit SCADA entrypoint & pre-warmer
 │   ├── utils.py                       ← Cached data loaders & telemetry components
 │   ├── assets/
-│   │   └── style.css                  ← Dark-mode SCADA styling & custom CSS
+│   │   └── style.css                  ← Institutional SCADA dark styling
 │   └── pages/
 │       ├── 01_overview.py             ← Executive benchmark leaderboard & radar chart
-│       ├── 02_24h_forecast.py         ← Interactive 24h fold forecast explorer
-│       ├── 03_168h_forecast.py        ← 7-Day extended trajectory & uncertainty spread
-│       ├── 04_backtesting.py          ← Gantt timeline, stability & calibration charts
-│       ├── 05_feature_importance.py   ← SHAP TreeExplainer ranking & Fourier polar plot
-│       └── 06_methodology.py          ← Formal math, proper scoring & research citations
+│       ├── 02_dispatch_simulator.py   ← ⚡ Live Grid Stress-Tester & Peak Dispatch Simulator
+│       ├── 03_24h_forecast.py         ← Interactive 24h fold forecast explorer
+│       ├── 04_168h_forecast.py        ← 7-Day extended trajectory & uncertainty spread
+│       ├── 05_backtesting.py          ← Gantt timeline, stability & calibration charts
+│       ├── 06_feature_importance.py   ← SHAP TreeExplainer ranking & Fourier polar plot
+│       └── 07_methodology.py          ← Formal math, proper scoring & research citations
 │
 ├── notebooks/
 │   ├── README.md                      ← Colab execution instructions
