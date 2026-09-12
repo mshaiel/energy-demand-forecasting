@@ -1,6 +1,6 @@
 """
-⚡ Page 5: Feature Intelligence & Model Interpretability
-SHAP TreeExplainer values, gain rankings, category attribution, and continuous Fourier polar circle.
+⚡ Page 6: Feature Intelligence & Interpretability
+SHAP TreeExplainer values, category attribution donut, and continuous Fourier polar circle.
 """
 from pathlib import Path
 import sys
@@ -32,28 +32,42 @@ st.set_page_config(
 apply_custom_css()
 render_sidebar()
 
-st.markdown("## 🧠 Feature Intelligence & Interpretability")
+# Console Header
 st.markdown(
-    "In-depth breakdown of the 35+ engineered temporal, cyclical, and autoregressive features for **Gen 2: XGBoost**. "
-    "Features are evaluated using model-agnostic **SHAP (SHapley Additive exPlanations)** and split-gain metrics."
+    """
+    <div class="console-header">
+        <div>
+            <div class="console-title">🧠 Feature Intelligence & SHAP Interpretability</div>
+            <div class="console-subtitle">Explaining XGBoost decisions with model-agnostic SHapley Additive exPlanations (SHAP) across 35+ engineered features.</div>
+        </div>
+        <div>
+            <span class="chip chip-warning">TREEEXPLAINER ATTRIBUTION</span>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
 
 feat_data = get_feature_importance()
 
-col_bar, col_donut = st.columns([1.4, 1.0])
+col_bar, col_donut = st.columns([1.35, 1.0])
 
 with col_bar:
-    st.markdown("### 🏆 Top 20 Features by Mean |SHAP Value| (MW Impact)")
-    top_n = st.slider("Number of features to display", min_value=10, max_value=25, value=15)
+    st.markdown("#### 🏆 Top Features by Mean |SHAP| (MW Impact on Demand)")
+    top_n = st.slider("Features to Display", min_value=10, max_value=25, value=15)
     shap_fig = create_shap_bar_chart(feat_data, top_n=top_n)
     st.plotly_chart(shap_fig, use_container_width=True)
 
 with col_donut:
-    st.markdown("### 🥧 Importance Attribution by Category")
+    st.markdown("#### 🥧 Importance Attribution by Category")
     shap_dict = feat_data.get("shap_mean", {})
     
-    # Categorize features
-    cats = {"Autoregressive Lags": 0.0, "Cyclical Fourier": 0.0, "Rolling Statistics": 0.0, "Calendar & Interaction": 0.0}
+    cats = {
+        "Autoregressive Lags": 0.0,
+        "Cyclical Fourier": 0.0,
+        "Rolling Statistics": 0.0,
+        "Calendar & Interaction": 0.0,
+    }
     for k, v in shap_dict.items():
         if "lag" in k:
             cats["Autoregressive Lags"] += v
@@ -70,16 +84,18 @@ with col_donut:
                 labels=list(cats.keys()),
                 values=list(cats.values()),
                 hole=0.6,
-                marker=dict(colors=["#f59e0b", "#00d4ff", "#8b5cf6", "#9ca3af"]),
+                marker=dict(colors=["#f59e0b", "#00d4ff", "#8b5cf6", "#64748b"]),
                 textinfo="label+percent",
+                textposition="outside",
             )
         ]
     )
     donut_fig.update_layout(
+        height=380,
         paper_bgcolor=CHART_THEME["paper_bgcolor"],
         font=CHART_THEME["font"],
-        legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5),
-        margin=dict(l=20, r=20, t=30, b=50),
+        legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5, font=dict(size=10, color="#cbd5e1")),
+        margin=dict(l=30, r=30, t=30, b=50),
     )
     st.plotly_chart(donut_fig, use_container_width=True)
 
@@ -87,17 +103,25 @@ st.markdown("---")
 col_polar, col_compare = st.columns([1.1, 1.3])
 
 with col_polar:
-    st.markdown("### 🔄 Cyclical Fourier Encoding Mechanics")
+    st.markdown("#### 🔄 Continuous Fourier Encoding Mechanics")
     st.markdown(
-        "Standard integer representations treat Hour 23 and Hour 0 as extreme opposites ($23 - 0 = 23$). "
-        "Sine/cosine Fourier projection maps time onto a continuous unit circle, eliminating boundary distortion."
+        "<div style='font-size: 0.82rem; color: #94a3b8; margin-bottom: 10px;'>"
+        "Integer hour representations create artificial boundary step-jumps (Hour 23 &ne; Hour 0). "
+        "Projecting onto a circular Fourier basis ensures smooth, continuous periodic transitions."
+        "</div>",
+        unsafe_allow_html=True,
     )
     polar_fig = create_cyclical_polar_chart()
     st.plotly_chart(polar_fig, use_container_width=True)
 
 with col_compare:
-    st.markdown("### ⚖️ SHAP vs Split Gain Rank Divergence")
-    st.markdown("Comparison showing how Gain over-indexes on high-cardinality features while SHAP measures true marginal impact.")
+    st.markdown("#### ⚖️ SHAP vs Split Gain Rank Divergence")
+    st.markdown(
+        "<div style='font-size: 0.82rem; color: #94a3b8; margin-bottom: 10px;'>"
+        "Split Gain over-indexes on high-cardinality continuous splits, whereas SHAP measures true marginal impact."
+        "</div>",
+        unsafe_allow_html=True,
+    )
 
     gains = feat_data.get("gain", {})
     shaps = feat_data.get("shap_mean", {})

@@ -1,6 +1,6 @@
 """
-⚡ Page 6: Formal Mathematical Methodology & Evaluation Theory
-Technical specification with LaTeX equations, proper scoring rules, and zero-leakage checklist.
+⚡ Page 7: Mathematical Methodology & Formal Specification
+Theoretical foundations: proper scoring rules, Winkler score formulas, and leakage isolation.
 """
 from pathlib import Path
 import sys
@@ -24,9 +24,20 @@ st.set_page_config(
 apply_custom_css()
 render_sidebar()
 
-st.markdown("## 📜 Mathematical Methodology & Architecture Abstract")
+# Console Header
 st.markdown(
-    "Comprehensive technical specification detailing model formulations, proper scoring rules, leakage prevention protocols, and research citations."
+    """
+    <div class="console-header">
+        <div>
+            <div class="console-title">📜 Mathematical Methodology & Theoretical Foundations</div>
+            <div class="console-subtitle">Formal definitions of proper scoring rules, interval sharpness penalties, and zero-leakage constraints.</div>
+        </div>
+        <div>
+            <span class="chip chip-cyan">RESEARCH ABSTRACT</span>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
 
 with st.expander("1. 🛡️ Rolling-Origin Expanding Window Protocol", expanded=True):

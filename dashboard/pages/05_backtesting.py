@@ -1,6 +1,6 @@
 """
-⚡ Page 4: Backtesting & Methodological Validation
-5-Fold expanding window timeline, per-fold stability, error distributions, and calibration bars.
+⚡ Page 5: Backtesting Protocol & Calibration Analysis
+Expanding window Gantt chart, per-fold model stability tracking, error distribution box plots, and coverage calibration.
 """
 from pathlib import Path
 import sys
@@ -34,9 +34,20 @@ st.set_page_config(
 apply_custom_css()
 render_sidebar()
 
-st.markdown("## 🛡️ Expanding-Window Backtesting Protocol")
+# Console Header
 st.markdown(
-    "Demonstrating zero temporal leakage via rolling-origin evaluation. The training window expands continuously while contiguous, non-overlapping test windows evaluate out-of-sample generalization."
+    """
+    <div class="console-header">
+        <div>
+            <div class="console-title">🛡️ Rolling-Origin Backtesting & Calibration Protocol</div>
+            <div class="console-subtitle">Empirical proof of zero temporal leakage. Out-of-sample stability evaluated across 5 expanding windows.</div>
+        </div>
+        <div>
+            <span class="chip chip-normal"><span class="pulse-dot"></span> ZERO LEAKAGE ENFORCED</span>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
 
 df = get_forecast_df()
@@ -44,7 +55,7 @@ folds = get_fold_metadata()
 metrics_summary = get_metrics_summary()
 
 # 1. Gantt Timeline Chart
-st.markdown("### 📅 Temporal Window Architecture (No Lookahead)")
+st.markdown("#### 📅 Temporal Boundaries (5-Fold Expanding Window)")
 gantt_fig = create_fold_timeline_chart(folds)
 st.plotly_chart(gantt_fig, use_container_width=True)
 
@@ -53,9 +64,9 @@ st.markdown("---")
 col_stability, col_box = st.columns(2)
 
 with col_stability:
-    st.markdown("### 📈 Model Stability Across Folds")
+    st.markdown("#### 📈 Model Stability Across Folds")
     metric_choice = st.selectbox(
-        "Select Metric for Stability Tracking",
+        "Metric for Stability Tracking",
         options=["RMSE", "MAE", "MAPE", "Winkler Score"],
         index=0,
     )
@@ -73,17 +84,20 @@ with col_stability:
     st.plotly_chart(stab_fig, use_container_width=True)
 
 with col_box:
-    st.markdown("### 📦 Error Distribution Spread (MW)")
-    st.markdown("Interquartile ranges (IQR) of absolute errors across all backtested timestamps.")
+    st.markdown("#### 📦 Error Distribution Spread (MW)")
+    st.markdown("<div style='font-size: 0.8rem; color: #64748b; margin-bottom: 8px;'>Interquartile ranges (IQR) of absolute errors across all evaluated hours.</div>", unsafe_allow_html=True)
     box_fig = create_error_box_plot(df_24h)
     st.plotly_chart(box_fig, use_container_width=True)
 
 st.markdown("---")
 # 3. Coverage Calibration Chart
-st.markdown("### 🎯 Empirical Coverage Calibration (Nominal: 80%)")
+st.markdown("#### 🎯 Empirical Coverage Calibration (Nominal: 80% CI)")
 st.markdown(
-    "Well-calibrated models produce intervals where approximately 80% of ground truth values fall within $[q_{10}, q_{90}]$. "
-    "Bars within $\\pm 5\\%$ are highlighted in <span style='color: #10b981; font-weight: 600;'>Green</span>.",
+    "<div style='font-size: 0.82rem; color: #94a3b8; margin-bottom: 12px;'>"
+    "Ideal calibration achieves 80.0% coverage within $[q_{10}, q_{90}]$. "
+    "Bars within $\\pm 5\\%$ are in <span style='color: #10b981; font-weight: 600;'>Green</span>, "
+    "$\\pm 10\\%$ in <span style='color: #f59e0b; font-weight: 600;'>Amber</span>."
+    "</div>",
     unsafe_allow_html=True,
 )
 

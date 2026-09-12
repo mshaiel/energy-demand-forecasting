@@ -95,12 +95,15 @@ def render_sidebar():
     st.sidebar.markdown("---")
     st.sidebar.markdown(
         """
-        <div style="font-size: 0.75rem; color: #6b7280; font-family: 'JetBrains Mono', monospace;">
-            Benchmark Architecture<br>
-            • Gen 1: SARIMAX<br>
-            • Gen 2: Quantile XGBoost<br>
-            • Gen 3: LSTM + MC Dropout<br>
-            • Gen 4: Chronos-T5 (Zero-Shot)
+        <div style="font-size: 0.75rem; color: #64748b; font-family: 'JetBrains Mono', monospace; line-height: 1.6;">
+            <b>Operational Modules</b><br>
+            01 • Executive Overview<br>
+            02 • Dispatch Simulator<br>
+            03 • 24h Day-Ahead Forecast<br>
+            04 • 168h Extended Horizon<br>
+            05 • Backtesting Protocol<br>
+            06 • Feature Intelligence<br>
+            07 • Mathematical Theory
         </div>
         """,
         unsafe_allow_html=True,

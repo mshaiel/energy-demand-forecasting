@@ -1,6 +1,6 @@
 """
-⚡ Page 3: 168-Hour Extended Forecast Explorer (7-Day Horizon)
-Multi-day forecast trajectory, weekly load decomposition, and uncertainty envelope width analysis.
+⚡ Page 4: 168-Hour Extended Forecast Explorer (7-Day Horizon)
+Multi-day forecast trajectory, diurnal demand decomposition, and uncertainty envelope width analysis.
 """
 from pathlib import Path
 import sys
@@ -34,15 +34,24 @@ st.set_page_config(
 apply_custom_css()
 render_sidebar()
 
-st.markdown("## 📅 168-Hour Extended Forecast Explorer (7-Day Horizon)")
+# Console Header
 st.markdown(
-    "Evaluation across a full 7-day operating week. Observe how **XGBoost's autoregressive lags (168h/336h)** anchor long-range weekly seasonality while zero-shot architectures experience drift beyond their context boundary."
+    """
+    <div class="console-header">
+        <div>
+            <div class="console-title">📅 168-Hour Extended Forecast Trajectory (7-Day Operating Week)</div>
+            <div class="console-subtitle">Observe long-horizon stability: XGBoost autoregressive lags (168h/336h) anchor weekly seasonality, while zero-shot models experience drift.</div>
+        </div>
+        <div>
+            <span class="chip chip-cyan">WEEK-AHEAD DISPATCH</span>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
 
 df = get_forecast_df()
 folds = get_fold_metadata()
-
-# Filter to extended 168h horizon
 df_168h = df[df["horizon"] == "extended"].copy()
 
 # Sidebar Controls
@@ -51,7 +60,7 @@ fold_id = st.sidebar.selectbox(
     "Select Backtest Fold",
     options=[1, 2, 3, 4, 5],
     index=4,
-    format_func=lambda x: f"Fold {x} (Final Test Period)" if x == 5 else f"Fold {x}",
+    format_func=lambda x: f"Fold {x} (Peak Summer Horizon)" if x == 5 else f"Fold {x}",
 )
 
 models_available = ["xgboost", "chronos", "lstm", "sarimax"]
@@ -67,18 +76,21 @@ selected_models = st.sidebar.multiselect(
     }.get(x, x),
 )
 
-show_uncertainty = st.sidebar.toggle("Show Uncertainty Bands (80% CI)", value=True)
-show_actual = st.sidebar.toggle("Show Ground Truth Demand", value=True)
+col_t1, col_t2 = st.sidebar.columns(2)
+with col_t1:
+    show_uncertainty = st.toggle("Uncertainty (80% CI)", value=True)
+with col_t2:
+    show_actual = st.toggle("Actual Demand", value=True)
 
 sub_df = df_168h[df_168h["fold_id"] == fold_id]
 
-# Main 7-Day Chart
+# Main 7-Day Chart (No collision, bottom legend)
 fig = create_forecast_plot(
     sub_df,
     models=selected_models,
     show_actual=show_actual,
     show_uncertainty=show_uncertainty,
-    title=f"Fold {fold_id} Full 7-Day Forecast Trajectory (168 Hours)",
+    title=f"Fold {fold_id} Full 7-Day Out-of-Sample Horizon (168 Hours)",
 )
 st.plotly_chart(fig, use_container_width=True)
 
@@ -86,10 +98,9 @@ st.markdown("---")
 col_heat, col_decomp = st.columns(2)
 
 with col_heat:
-    st.markdown("### 📈 Uncertainty Band Width by Time of Day")
-    st.markdown("Average spread $(q_{90} - q_{10})$ across the 24 hours of the day (wider interval = higher model uncertainty).")
+    st.markdown("#### 📈 Uncertainty Spread by Time of Day")
+    st.markdown("<div style='font-size: 0.8rem; color: #64748b; margin-bottom: 8px;'>Average envelope width (q90 - q10) across 24 hours of the diurnal cycle.</div>", unsafe_allow_html=True)
 
-    # Compute spread by hour for selected models
     sub_df_copy = sub_df.copy()
     sub_df_copy["hour"] = sub_df_copy["timestamp"].dt.hour
     sub_df_copy["band_width"] = sub_df_copy["q90"] - sub_df_copy["q10"]
@@ -106,24 +117,26 @@ with col_heat:
                     y=hourly_spread.values,
                     mode="lines+markers",
                     name=m.upper(),
-                    line=dict(color=color, width=2.5),
+                    line=dict(color=color, width=2.2),
+                    marker=dict(size=5),
                 )
             )
 
     spread_fig.update_layout(
+        height=340,
         xaxis=dict(title="Hour of Day (00:00 to 23:00)", tickmode="linear", dtick=3, **CHART_THEME["xaxis"]),
-        yaxis=dict(title="80% CI Width (MW)", **CHART_THEME["yaxis"]),
+        yaxis=dict(title="Spread (MW)", **CHART_THEME["yaxis"]),
         paper_bgcolor=CHART_THEME["paper_bgcolor"],
         plot_bgcolor=CHART_THEME["plot_bgcolor"],
         font=CHART_THEME["font"],
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin=dict(l=40, r=20, t=30, b=40),
+        legend=dict(orientation="h", yanchor="top", y=-0.22, xanchor="center", x=0.5, font=dict(size=10, color="#cbd5e1")),
+        margin=dict(l=55, r=25, t=30, b=65),
     )
     st.plotly_chart(spread_fig, use_container_width=True)
 
 with col_decomp:
-    st.markdown("### 📊 Diurnal Demand Pattern (Weekday vs Weekend)")
-    st.markdown("Structural load difference captured by calendar features and cyclical encodings.")
+    st.markdown("#### 📊 Diurnal Profile (Weekday vs Weekend)")
+    st.markdown("<div style='font-size: 0.8rem; color: #64748b; margin-bottom: 8px;'>Structural load difference captured by calendar features and Fourier sine/cosine terms.</div>", unsafe_allow_html=True)
 
     sub_df_copy["is_weekend"] = sub_df_copy["timestamp"].dt.dayofweek >= 5
     weekday_mean = sub_df_copy[~sub_df_copy["is_weekend"]].groupby("hour")["actual"].mean()
@@ -135,8 +148,8 @@ with col_decomp:
             x=weekday_mean.index,
             y=weekday_mean.values,
             mode="lines",
-            name="Weekday Profile (Mon-Fri)",
-            line=dict(color="#00d4ff", width=3),
+            name="Weekday (Mon–Fri)",
+            line=dict(color="#00d4ff", width=2.5),
         )
     )
     decomp_fig.add_trace(
@@ -144,18 +157,19 @@ with col_decomp:
             x=weekend_mean.index,
             y=weekend_mean.values,
             mode="lines",
-            name="Weekend Profile (Sat-Sun)",
-            line=dict(color="#f59e0b", width=3, dash="dash"),
+            name="Weekend (Sat–Sun)",
+            line=dict(color="#f59e0b", width=2.5, dash="dash"),
         )
     )
 
     decomp_fig.update_layout(
+        height=340,
         xaxis=dict(title="Hour of Day", tickmode="linear", dtick=3, **CHART_THEME["xaxis"]),
         yaxis=dict(title="Mean Demand (MW)", **CHART_THEME["yaxis"]),
         paper_bgcolor=CHART_THEME["paper_bgcolor"],
         plot_bgcolor=CHART_THEME["plot_bgcolor"],
         font=CHART_THEME["font"],
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin=dict(l=40, r=20, t=30, b=40),
+        legend=dict(orientation="h", yanchor="top", y=-0.22, xanchor="center", x=0.5, font=dict(size=10, color="#cbd5e1")),
+        margin=dict(l=55, r=25, t=30, b=65),
     )
     st.plotly_chart(decomp_fig, use_container_width=True)
