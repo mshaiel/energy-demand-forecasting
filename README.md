@@ -13,7 +13,7 @@
 
 ## 🌐 Live Interactive Dashboard & Links
 
-* **🚀 Live SCADA Dashboard**: `https://<your-streamlit-subdomain>.streamlit.app` *(Deploy in 1-click via Streamlit Cloud)*
+* **🚀 Live SCADA Dashboard**: `https://energy-grid-intelligence.streamlit.app/` 
 * **⚡ Master Colab Training Pipeline**: [`notebooks/master_training_pipeline.ipynb`](notebooks/master_training_pipeline.ipynb)
 * **📊 Dataset Provenance**: [PJM Hourly Energy Consumption (Kaggle / Rob Mulla)](https://www.kaggle.com/datasets/robikscube/hourly-energy-consumption) — 140,256 continuous hourly observations (2002–2018).
 
